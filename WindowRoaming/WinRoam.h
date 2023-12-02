@@ -13,7 +13,12 @@ namespace window
 		bool draw()
 		{
 			if (!now) return false;
-			now = now->drawNext(windows);
+			auto next = now->drawNext(windows);
+			if (next.empty()) return false;
+			auto nextIt = windows.find(next);
+			if (nextIt == windows.end())
+				windows[next] = window_register::getInstance().create_class(next);
+			now = windows[next];
 			return true;
 		}
 		~WinRoam()

@@ -11,50 +11,52 @@ namespace TestWindow
     class HelloWindow : public Window
     {
     public:
-        HelloWindow(Window* _parent = nullptr, string s = "Hello") :Window(s, _parent) {}
-        virtual Window* drawNext(unordered_map<string, Window*>& windowlist) override
+        HelloWindow(string s = "Hello", string _parent = "Login") :Window(s, _parent) {  }
+        virtual string drawNext(unordered_map<string, Window*>& windowlist) override
         {
             std::cout << "hello" << std::endl;
             int num{};
             std::cin >> num;
             if (num == 1)
                 return parent;
-            return windowlist[getName()];
+            return getName();
         }
     };
+
     class LoginWindow : public Window
     {
     public:
-        LoginWindow(string s = "Login") :Window(s) {};
-        virtual Window* drawNext(unordered_map<string, Window*>& windowlist) override
+        LoginWindow(string s = "Login") :Window(s) { window::window_register::getInstance().register_class(s, []() {return new LoginWindow; }); };
+        virtual string drawNext(unordered_map<string, Window*>& windowlist) override
         {
             std::cout << "Login" << std::endl;
             int num{};
             std::cin >> num;
             if (num == 1)
             {
-                auto it = windowlist.find("Hello");
-                if (it != windowlist.end())
-                    return it->second;
-                else
-                {
-                    windowlist["Hello"] = new HelloWindow(this);
-                    return windowlist["Hello"];
-                }
+                return "Hello";
             }
             if (num == 2)
-                return nullptr;
+                return {};
 
-            return windowlist[getName()];
+            return getName();
         }
     };
+#define registWindow(name)            \
+window::window_register::getInstance().register_class(#name, []() {return new name##Window; })
 
+    void initWindow()
+    {
+        registWindow(Hello);
+        registWindow(Login);
+    }
     
 }
 
 
 int main()
 {
+    TestWindow::initWindow();
     using namespace window;
     WinRoam manager(new TestWindow::LoginWindow);
     while (true)

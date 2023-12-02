@@ -132,6 +132,8 @@
     <ClCompile Include="WinRoam.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="reflect.hpp" />
+    <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WinRoam.h" />
   </ItemGroup>
